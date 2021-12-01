@@ -2,7 +2,7 @@
 
 with open("input.txt") as fp:
     data = list(map(lambda i: int(i), fp.read().splitlines()))
-    fp.close
+    fp.close()
 
 ct = 0
 prev = data[0]
