@@ -1,9 +1,18 @@
 #!/usr/bin/env python3
 
 
-def solve(lines: [tuple], with_diagonals: bool) -> int:
+def get_inputs(filename: str) -> [tuple]:
+    with open(filename) as fp:
+        data = fp.read().splitlines()
+        fp.close()
+
+    data = [s.replace(" -> ", ",").split(",") for s in data]
+    return [tuple(map(lambda i: int(i), s)) for s in data]
+
+
+def solve(arr: [tuple], with_diagonals: bool) -> int:
     ct = {}
-    for (x0, y0, x1, y1) in lines:
+    for (x0, y0, x1, y1) in arr:
         if not (x0 == x1 or y0 == y1):
             if not with_diagonals:
                 continue
@@ -16,12 +25,6 @@ def solve(lines: [tuple], with_diagonals: bool) -> int:
     return len(list(filter(lambda v: v > 1, ct.values())))
 
 
-with open("input.txt") as fp:
-    data = fp.read().splitlines()
-    fp.close()
-
-data = [s.replace(" -> ", ",").split(",") for s in data]
-data = [tuple(map(lambda i: int(i), s)) for s in data]
-
+data = get_inputs("input.txt")
 print("part 1:", solve(data, False))
 print("part 2:", solve(data, True))
