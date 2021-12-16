@@ -5,35 +5,14 @@ from heapq import heappush, heappop
 
 def get_inputs(filename: str) -> ([[int]], [[int]]):
     with open(filename) as fp:
-        data = fp.read().splitlines()
+        data = [[int(c) for c in list(r)] for r in fp.read().splitlines()]
         fp.close()
-
-    grid1 = []
-    for line in data:
-        row = [int(x) for x in list(line)]
-        grid1.append(row)
-
-    def add(i: int, n: int) -> int:
-        m = i + n
-        return m if m < 10 else (m % 10) + 1
-
-    temp = []
-    for row in grid1:
-        temp_row = []
-        for i in range(5):
-            temp_row += list(map(lambda n: add(i, n), row))
-        temp.append(temp_row)
-
-    grid2 = []
-    for i in range(5):
-        for temp_row in temp:
-            grid2.append(list(map(lambda n: add(i, n), temp_row)))
-
-    return grid1, grid2
+    return data
 
 
-def solve(grid: [[int]]) -> int:
-    N, M = len(grid), len(grid[0])
+def solve(grid: [[int]], scale: int) -> int:
+    n, m = len(grid), len(grid[0])
+    N, M = n * scale, m * scale
     queue = [(0, 0, 0)]
     seen = {(0, 0): True}
     while queue:
@@ -47,10 +26,12 @@ def solve(grid: [[int]]) -> int:
             if (sy, sx) in seen:
                 continue
             seen[(sy, sx)] = True
-            heappush(queue, (risk + grid[sy][sx], sy, sx))
+            val = grid[sy % n][sx % m] + (sy // n) + (sx // m)
+            val = val if val < 10 else (val % 10) + 1
+            heappush(queue, (risk + val, sy, sx))
     return -1
 
 
-grid1, grid2 = get_inputs("input.txt")
-print("part 1:", solve(grid1))
-print("part 2:", solve(grid2))
+data = get_inputs("input.txt")
+print("part 1:", solve(data, 1))
+print("part 2:", solve(data, 5))
